@@ -129,7 +129,7 @@ function displayProducts(productsData,who="productwrapper"){
 
     productsData.forEach(function(product,index){
         
-        let {name,image,color,description,price,size} = product;
+        let {id,name,image,color,description,price,size} = product;
 
     
         productsString += `<div class="product">
@@ -142,7 +142,7 @@ function displayProducts(productsData,who="productwrapper"){
        <P>Color : ${color}</P>
        <P>${description}</P>
        <p>
-         <button onclick="addToCart(${index})">Add to Cart</button>
+         <button onclick="addToCart(${id})">Add to Cart</button>
        </p>
      </div>`;
        
@@ -154,7 +154,7 @@ function displayProducts(productsData,who="productwrapper"){
 
     productsData.forEach(function(product,index){
         
-      let {name,image,color,description,price,size} = product; 
+      let {id,name,image,color,description,price,size} = product; 
     
         productsString += `<div class="product">
         <div class="prodimg">
@@ -166,7 +166,7 @@ function displayProducts(productsData,who="productwrapper"){
        <P>Color : ${color}</P>
        <P>${description}</P>
        <p>
-        <button onclick="removeFromCart(${index})">Remove from Cart</button>
+        <button onclick="removeFromCart(${id})">Remove from Cart</button>
        </p>
      </div>`;       
     });
@@ -197,42 +197,50 @@ function searchProduct(searchValue){
     displayProducts(searchedProducts);
 }
 
-
-
-function addToCart(productindex){
-    let temp1=cart.filter(function(product){
-      return product.name.toUpperCase().indexOf(products[productindex].name.toUpperCase())!=-1
-    });
-    if(temp1.length==0){
-    cart.push(products[productindex]);
-    displayProducts(cart,"cart");
-  }
-    else{
-      alert("The product is alredy in the cart");
-    }
-    
+function getProductByID(productArray,id)
+{
+    return productArray.find(function(product){
+        return product.id==id;
+    })
 }
 
 
-function removeFromCart(index){
-    cart.splice(index,1);
+function addToCart(id){
+  let popUp=cart.filter(function(ele){
+      return ele.id==id;
+  })
+  let pro=getProductByID(products,id);
+  if(popUp.length==0)
+  {
+      cart.push(pro);
+      displayProducts(cart,"cart"); 
+  }
+  else{
+      alert("This product already exists in your cart");
+  }
+      
+}
+
+
+function removeFromCart(id){
+    cart.splice(index, 1);
 
     displayProducts(cart,"cart")
 }
 
-
 function filter(){
-  let minv=document.getElementById("minp").value;
-  let maxv = document.getElementById("maxp").value;
-  let items= products.filter(function(itemsl){
-      return itemsl.price>=minv && itemsl.price<=maxv;
-  })
-   displayProducts(items);
-  document.getElementById("minp").value="";
-    document.getElementById("maxp").value="";
+  let min=document.getElementById("price1").value;
+  let max=document.getElementById("price2").value;
+  let filterResult=products.filter(function(ele){
+      return ele.price>=min && ele.price<=max;
+  });
+  displayProducts(filterResult);
+  document.getElementById("price1").value="";
+  document.getElementById("price2").value="";
 }
   
 displayProducts(products)
+
 
 
 
